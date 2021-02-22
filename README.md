@@ -19,6 +19,7 @@ Table of Contents
   * [Main variables](#main-variables)
     + [Overall Zabbix](#overall-zabbix)
     + [Zabbix Server](#zabbix-server)
+    + [Custom Zabbix Scripts](#custom-zabbix-scripts)
     + [TLS Specific configuration](#tls-specific-configuration)
   * [Database](#database)
 - [Dependencies](#dependencies)
@@ -155,7 +156,7 @@ See the following list of supported Operating systems with the Zabbix releases:
 
 Installing this role is very simple: `ansible-galaxy install dj-wasabi.zabbix-server`
 
-Please be aware that this role only installs the Zabbix Server and not the Zabbix Web. If you do want to have a Zabbix Web, please execute the following command: `ansible-galaxy install dj-wasabi.zabbix-web`  
+Please be aware that this role only installs the Zabbix Server and not the Zabbix Web. If you do want to have a Zabbix Web, please execute the following command: `ansible-galaxy install dj-wasabi.zabbix-web`
 
 Default username/password for the Zabbix Web interface is the default one installed by Zabbix.
 
@@ -170,13 +171,16 @@ The following is an overview of all available configuration default for this rol
 
 ### Overall Zabbix
 
-* `zabbix_version`: This is the version of zabbix. Default: 3.4. Can be overridden to 3.2, 3.0, 2.4, or 2.2.
+* `zabbix_server_version`: This is the version of zabbix. Default: 4.4. Can be overridden to 3.2, 3.0, 2.4, or 2.2. Previously the variable `zabbix_version` was used directly but it could cause [some inconvenience](https://github.com/dj-wasabi/ansible-zabbix-agent/pull/303). That variable is maintained by retrocompativility.
 * `zabbix_repo_yum`: A list with Yum repository configuration.
 * `zabbix_repo`: Default: _zabbix_
   * _epel_ install agent from EPEL repo
   * _zabbix_ (default) install agent from Zabbix repo
   * _other_ install agent from pre-existing or other repo
-* `zabbix_server_package_state`: Default: _present_. Can be overridden to "latest" to update packages when needed.   
+* `zabbix_server_package_state`: Default: _present_. Can be overridden to "latest" to update packages when needed.
+* `zabbix_service_state`: Default: `started`. Can be overridden to stopped if needed
+* `zabbix_service_enabled`: Default: `True` Can be overridden to `False` if needed
+* `zabbix_selinux`: Enables an SELinux policy so that the server will run. Default: False.
 
 ### Zabbix Server
 
@@ -194,9 +198,10 @@ The following is an overview of all available configuration default for this rol
 * `zabbix_database_creation`: True / False. When you don't want to create the database including user, you can set it to False.
 * `zabbix_server_install_recommends`: True / False. False does not install the recommended packages that come with the zabbix-server install. Default true
 * `zabbix_server_install_database_client`: True / False. False does not install database client. Default true
-* `zabbix_server_database_sqlload`:True / False. When you don't want to load the sql files into the database, you can set it to False.
+* `zabbix_database_sqlload`:True / False. When you don't want to load the sql files into the database, you can set it to False.
 * `zabbix_server_dbencoding`: The encoding for the MySQL database. Default set to `utf8`
 * `zabbix_server_dbcollation`: The collation for the MySQL database. Default set to `utf8_bin`
+* `zabbix_server_manage_service`: True / False. When you run multiple Zabbix servers in a High Available cluster setup (e.g. pacemaker), you don't want Ansible to manage the zabbix-server service, because Pacemaker is in control of zabbix-server service.
 
 ### Custom Zabbix Scripts
 

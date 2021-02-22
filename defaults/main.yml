@@ -2,12 +2,16 @@
 # defaults file;
 # zabbix role specific
 
-zabbix_version: 4.4
+zabbix_server_version: 4.4
+zabbix_version: "{{ zabbix_server_version }}"
 zabbix_repo: zabbix
 
 zabbix_server_package_state: present
 zabbix_server_install_recommends: True
 zabbix_server_install_database_client: True
+
+zabbix_service_state: started
+zabbix_service_enabled: True
 
 zabbix_repo_yum:
   - name: zabbix
@@ -16,7 +20,7 @@ zabbix_repo_yum:
     gpgcheck: 0
     gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ZABBIX
     state: present
-  - name: zabbix-supported
+  - name: zabbix-non-supported
     description: Zabbix Official Repository non-supported - $basearch
     baseurl: http://repo.zabbix.com/non-supported/rhel/{{ ansible_distribution_major_version }}/$basearch/
     gpgcheck: 0
@@ -114,7 +118,9 @@ zabbix_server_tlskeyfile:
 zabbix_server_startescalators: 1
 zabbix_server_vmwareperffrequency: 60
 zabbix_server_vmwaretimeout: 10
+zabbix_server_manage_service: True
 
 # SELinux specific
+zabbix_selinux: False
 selinux_allow_zabbix_can_network: False
 selinux_allow_zabbix_can_http: False
